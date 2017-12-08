@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>main</title>
+  {% block css%}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/manage_admin.css'%}">
+  {% endblock %}
+</head>
+<body>
+{% block AA%}
+	{% if user == False %}
+    <form class="form-inline my-2 my-lg-0" action="/login">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">로그인</button>
+    </form>
+	{% else %}
+    <form class="form-inline my-2 my-lg-0" action="/logout">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">{{user.name}}</button>
+    </form>
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/main">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">공간관계</li>
+    <li class="breadcrumb-item active" aria-current="page">이웃공간 관리</li>
+  </ol>
+</nav>
+<div class="table-responsive-vertical shadow-z-1" id="tableees">
+  <h4 class="my">이웃공간 목록</h4>
+  <!-- Table starts here -->
+  <table id="table" class="table table-hover table-mc-light-blue">
+      <thead class="my2">
+        <tr>
+          <th style="text-align: center;">촬영공간</th>
+          <th style="text-align: center;">촬영공간</th>
+          <th style="text-align: center;">경로이름</th>
+          <th style="text-align: center;">자세히</th>
+          <th style="text-align: center;">삭제</th>
+        </tr>
+        <tr>
+        <th style="text-align: center;">
+          <input style="text-align: center;" type="text" id="myInput0" onkeyup="myFunction0()" placeholder="공간 검색">
+        </th>
+        <th style="text-align: center;">
+          <input style="text-align: center;" type="text" id="myInput1" onkeyup="myFunction1()" placeholder="공간 검색">
+        </th>
+        <th style="text-align: center;">
+          <input style="text-align: center;" type="text" id="myInput2" onkeyup="myFunction2()" placeholder="경로 검색">
+        </th>
+        <th style="text-align: center;"></th>
+        <th style="text-align: center;"></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for i in all_nei %}
+        <tr>
+          <td style="text-align: center; font-weight: bold" data-title="Name1">{{i.id_AREA1.name}}</td>
+          <td style="text-align: center; font-weight: bold" data-title="Name2">{{i.id_AREA2.name}}</td>
+          <td style="text-align: center; font-weight: 400;" data-title="path">{{i.path}}</td>
+          <td style="text-align: center;" data-title="map">
+            <a href="/manage_neighbor_map/{{i.id}}">자세히</a>
+          </td>
+          <td style="text-align: center;" data-title="delete">
+            <a style="color:red;" href="/manage_neighbor_delete/{{i.id}}">삭제</a>
+          </td>
+        </tr>
+        
+      {% endfor %}
+      </tbody>
+    </table>
+<div id='admin_ad'>
+<h4 id='admin_ad_header'>이웃공간 추가</h4>
+<form method="post" action="/manage_neighbor/">
+    {% csrf_token %}
+  <div class="form-row">
+    <div class="form-group col-md-4">
+      <label for="input1">촬영공간1</label>
+      <select name="area1" id="input1" class="form-control form-control-lg">
+        <option selected>Choose...</option>
+        {% for a in all_area%}
+        <option value="{{a.id}}">{{a.name}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="input2">촬영공간2</label>
+      <select name="area2" id="input2" class="form-control form-control-lg">
+        <option selected>Choose...</option>
+        {% for a in all_area%}
+        <option value="{{a.id}}">{{a.name}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="input3">경로</label>
+      <input name="path" type="text" class="form-control form-control-lg" id="input3" placeholder="예)신중도 뒷길">
+    </div>
+  </div>
+  <button style="width:100%;margin-top: 3%" type="submit" class="btn btn-primary btn-lg">&nbsp;&nbsp;&nbsp;추가&nbsp;&nbsp;&nbsp;</button>
+</form>
+</div>
+  </div>
+{% endblock %}
+</body>
+
+{% block scripts %}
+  <script src="{% static 'js/cctv.js'%}"></script>
+{% endblock %}
+
+
+</html>

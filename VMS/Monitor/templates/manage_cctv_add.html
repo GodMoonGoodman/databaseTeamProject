@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>main</title>
+  {% block css%}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/manage_admin.css'%}">
+  {% endblock %}
+</head>
+<body>
+{% block AA%}
+	{% if user == False %}
+    <form class="form-inline my-2 my-lg-0" action="/login">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">로그인</button>
+    </form>
+	{% else %}
+    <form class="form-inline my-2 my-lg-0" action="/logout">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">{{user.name}}</button>
+    </form>
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/main">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">CCTV</li>
+    <li class="breadcrumb-item active" aria-current="page">추가/제거</li>
+  </ol>
+</nav>
+<div style="margin-top: 3%;" class="container">
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h3 style="color:#007bff;" class="card-title">새 CCTV 직접 추가</h3>
+          <p class="card-text">CCTV의 모델명과, 설치 날짜, 위도와 경도를 차례로 입력하세요.</p>
+          <p class="card-text">새로운 CCTV는 최고관리자에게 먼저 할당 됩니다.</p>
+            <form method="post">
+                {% csrf_token %}
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <label for="input1">모델명</label>
+                  <input name="model" type="text" class="form-control" id="input1" placeholder="모델명">
+                </div>
+                <div class="form-group col-md-12">
+                  <label for="input2">설치일</label>
+                  <input name="setup_date" type="date" class="form-control" id="input2" value="2017-10-10">
+                </div>
+                <div class="form-group col-md-12">
+                  <label for="input1">위도</label>
+                  <input name="lat" type="text" class="form-control" id="input1" placeholder="37.xxx">
+                </div>
+                <div class="form-group col-md-12">
+                  <label for="input1">경도</label>
+                  <input name="lon" type="text" class="form-control" id="input1" placeholder="126.xxx">
+                </div>
+
+              </div>
+              <button style="margin-top:3%; width:100%" type="submit" class="btn btn-primary btn-lg">&nbsp;&nbsp;&nbsp;추가&nbsp;&nbsp;&nbsp;</button>
+            </form>
+          <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h3 style="color:#007bff;" class="card-title">CSV 파일 업로드</h3>
+          <p class="card-text">[모델명],[설치날짜],[위도],[경도] 포맷의 CSV파일을 등록해주세요.</p>
+          <p class="card-text">새로운 CCTV는 최고관리자에게 먼저 할당 됩니다.</p>
+
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <!-- <input name="csv" type="file" class="custom-file-input" id="input1"> -->
+                <input name="csv" type="file" class="form-control" id="input1">
+
+              </div>
+            </div>
+            <button style="margin-top:3%; width:100%" type="submit" class="btn btn-primary btn-lg">&nbsp;&nbsp;&nbsp;csv 추가&nbsp;&nbsp;&nbsp;</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
+{% endblock %}
+</body>
+{% block scripts %}
+  <script src="{% static 'js/cctv.js'%}"></script>
+{% endblock %}
+</html>

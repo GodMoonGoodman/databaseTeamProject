@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>main</title>
+  {% block css%}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/manage_admin.css'%}">
+  {% endblock %}
+</head>
+<body>
+{% block AA%}
+	{% if user == False %}
+    <form class="form-inline my-2 my-lg-0" action="/login">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">로그인</button>
+    </form>
+	{% else %}
+    <form class="form-inline my-2 my-lg-0" action="/logout">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">{{user.name}}</button>
+    </form>
+	{% endif %}
+{% endblock %}
+
+
+
+
+{% block content %}
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/main">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">계정관리</li>
+    <li class="breadcrumb-item"><a href="/manage_admin">일반 관리자 관리</a></li>
+    <li class="breadcrumb-item active" aria-current="page">할당된 cctv</li>
+  </ol>
+</nav>
+<div class="table-responsive-vertical shadow-z-1" id="tableees">
+  <!-- Table starts here -->
+  <table id="table" class="table table-hover table-mc-light-blue">
+      <thead>
+        <tr>
+          <th style="text-align: center;">모델명</th>
+          <th style="text-align: center;">설치날짜</th>
+          <th style="text-align: center;">촬영공간 목록</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for i in cctvs %}
+        <tr>
+          <td style="text-align: center;" data-title="Email">{{i.model}}</td>
+          <td style="text-align: center;" data-title="Name">{{i.setup_date}}</td>
+          <td style="text-align: center;" data-title="Position"></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+{% endblock %}
+</body>
+{% block scripts %}
+  <script src="{% static 'js/cctv.js'%}"></script>
+{% endblock %}
+
+</html>

@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>main</title>
+  {% block css%}
+  <link rel="stylesheet" type="text/css" href="http://getbootstrap.com/docs/4.0/examples/album/album.css">
+
+  {% endblock %}
+</head>
+
+<body>
+{% block AA%}
+	{% if user == False %}
+    <form class="form-inline my-2 my-lg-0" action="/login">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">로그인</button>
+    </form>
+	{% else %}
+    <form class="form-inline my-2 my-lg-0" action="/logout">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">{{user.name}}</button>
+    </form>
+	{% endif %}
+{% endblock %}
+
+
+
+{% block content %}
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/main">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">공간관계</li>
+    <li class="breadcrumb-item active"><a href="/manage_sequence">공간 시퀀스 관리</a></li>
+    <li class="breadcrumb-item active" aria-current="page">이웃공간 추가</li>
+  </ol>
+</nav>
+<main role="main">
+      <div class="album text-muted">
+        <div class="container">
+          <a href="javascript:history.back()">뒤로가기</a>
+          <div class="row">
+            <div class="col-lg-6">
+            {% for i in target_video %}
+              <div class="card" style="width:100%;">
+                <p class="area_name"><bold>장소 :</bold> {{i.10}}</p>
+                <p class="card-text"><bold>시작시간 :</bold> {{i.3|date:"y-m-d H"}}시 정각</p>
+                <p class="card-text"><bold>종료시간 :</bold> {{i.4|date:"y-m-d H"}}시 정각</p>
+                <a href="/static/{{i.1}}" download="">video 다운로드</a>
+                <a href="/static/{{i.2}}" download="">meta 다운로드</a>
+                <video style="width:100%;" alt="Card image cap" controls autoplay>
+                  <source src="/static/{{i.1}}" type="video/mp4">
+                </video>
+              </div>
+
+              <div class="card" style="width:100%;">
+                <h4>Meta Data</h4>
+                <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th>time</th>
+                      <th>Obj_id</th>
+                      <th>Obj_x</th>
+                      <th>Obj_y</th>
+                      <th>size</th>
+                      <th>speed</th>
+                      <th>color</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in target_meta %}
+                    <tr>
+                      <td>{{i.2|date:"ymd His"}}</td>
+                      <td>{{i.1}}</td>
+                      <td>{{i.3}}</td>
+                      <td>{{i.4}}</td>
+                      <td>{{i.5}}</td>
+                      <td>{{i.6}}</td>
+                      <td>{{i.7}}</td>
+                    <tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card" style="width:100%;">
+                <iframe
+              width="100%"
+              height="625px"
+              frameborder="0" style="border:0"
+              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBlRhiZOEOyc91d9j7EevLbtqhKxfyh1Yk&q={{i.15}},{{i.16}}" allowfullscreen>
+              </iframe>
+              </div>
+
+              <div class="card" style="width:100%;">
+                <h4>Statistic Graph</h4>
+                <img src="/static/{{graph}}">
+              </div>
+              <div class="card" style="width:100%;">
+                  <h4>Statistic Data</h4>
+                <a href="/statistic_download/{{target_stat.id}}">download</a>
+                <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th>#record</th>
+                      <th>duration</th>
+                      <th>#obj</th>
+                      <th>average speed</th>
+                      <th>average size</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{target_stat.num_record}}</td>
+                      <td>{{target_stat.duration}}</td>
+                      <td>{{target_stat.num_obj}}</td>
+                      <td>{{target_stat.avg_speed}}</td>
+                      <td>{{target_stat.avg_size}}</td>
+                    <tr>
+                  </tbody>
+                </table>
+              </div>
+              </div>
+            </div>
+              {% endfor %}
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+    </main>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=_tYt07PPyPq1NBA7SH48&submodules=geocoder"></script>
+
+{% endblock %}
+</body>
+</html>2

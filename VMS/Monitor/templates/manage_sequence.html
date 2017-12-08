@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>main</title>
+  {% block css%}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/manage_admin.css'%}">
+  {% endblock %}
+</head>
+<body>
+{% block AA%}
+	{% if user == False %}
+    <form class="form-inline my-2 my-lg-0" action="/login">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">로그인</button>
+    </form>
+	{% else %}
+    <form class="form-inline my-2 my-lg-0" action="/logout">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">{{user.name}}</button>
+    </form>
+	{% endif %}
+{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/main">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">공간관계</li>
+    <li class="breadcrumb-item active" aria-current="page">공간시퀀스 관리</li>
+  </ol>
+</nav>
+<div class="table-responsive-vertical shadow-z-1" id="tableees">
+  <h4 class="my">공간 시퀀스 목록</h4>
+  <h6 class="my">최대 4개의 촬영공간에 대한 시퀀스가 가능합니다</h6>
+  <!-- Table starts here -->
+  <table id="table" class="table table-hover table-mc-light-blue">
+    <input style="text-align: center; width: 100%; border:1.5px solid #007bff;height: 50px; margin-top:3%;margin-bottom: 3%;" type="text" id="myInput0" onkeyup="myFunctionx()" placeholder="검색">
+
+      <thead class="my2">
+        <tr>
+          <th style="text-align: center;color:#007bff;">이웃공간</th>
+          <th style="text-align: center;color:#007bff;">이웃공간</th>
+          <th style="text-align: center;color:#007bff;">이웃공간</th>
+          <th style="text-align: center;color:#007bff;">이웃공간</th>
+          <th style="text-align: center;">지도</th>
+          <th style="text-align: center;color:green;">늘리기</th>
+          <th style="text-align: center;color:orange;">줄이기</th>
+          <th style="text-align: center;color:red;">삭제</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for seq in all_seq %}
+        <tr>
+          <td style="text-align: center;" data-title="NEI1">
+            {{seq.id_NEI1.id_AREA1.name}} - {{seq.id_NEI1.path}} - {{seq.id_NEI1.id_AREA2.name}}
+          </td>
+          <td style="text-align: center;" data-title="NEI2">
+            {{seq.id_NEI2.id_AREA1.name}} - {{seq.id_NEI2.path}} - {{seq.id_NEI2.id_AREA2.name}}
+          </td>
+          <td style="text-align: center;" data-title="NEI3">
+            {{seq.id_NEI3.id_AREA1.name}} - {{seq.id_NEI3.path}} - {{seq.id_NEI3.id_AREA2.name}}
+          </td>
+          <td style="text-align: center;" data-title="NEI4">
+            {{seq.id_NEI4.id_AREA1.name}} - {{seq.id_NEI4.path}} - {{seq.id_NEI4.id_AREA2.name}}
+          </td>
+          <td style="text-align: center;" data-title="append">
+            <a href="/manage_sequence_mapview/{{seq.id}}">자세히</a>
+          </td>
+          <td style="text-align: center;" data-title="append">
+            {% if seq.id_NEI4.id_AREA1 == None %}
+            <a style="color:green;" href="/manage_sequence_append/{{seq.id}}">늘리기</a>
+            {% endif %}
+          </td>
+          <td style="text-align: center;" data-title="delete">
+            {% if seq.id_NEI3.id_AREA1.name != ''%}
+            <a style="color:orange;" href="/manage_sequence_del/{{seq.id}}">줄이기</a>
+            {% endif %}
+          </td>
+          <td style="text-align: center;" data-title="remove">
+            <a style="color:red;" href="/manage_sequence_remove/{{seq.id}}">삭제</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+<div id='admin_ad'>
+<h4>공간 시퀀스 추가</h4>
+<h6 id='admin_ad_header'>동일한 이웃공간은 선택할 수 없습니다.</h6>
+<form method="post">
+    {% csrf_token %}
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="input1">이웃 공간(1)</label>
+      <select name="nei1" id="input1" class="form-control form-control-lg" onselect="myfunction()">
+        <option selected>Choose...1</option>
+        {% for a in all_nei%}
+        <option value="{{a.id}}">[{{a.id_AREA1.name}}] - {{a.path}} - [{{a.id_AREA2.name}}]</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="input2">이웃 공간(2)</label>
+      <select name="nei2" id="input2" class="form-control form-control-lg">
+        <option selected>Choose...2</option>
+        {% for a in all_nei%}
+        <option value="{{a.id}}">[{{a.id_AREA1.name}}] - {{a.path}} - [{{a.id_AREA2.name}}]</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  
+  <button style="width:100%;margin-top: 3%" type="submit" class="btn btn-primary btn-lg">&nbsp;&nbsp;&nbsp;추가&nbsp;&nbsp;&nbsp;</button>
+</form>
+</div>
+</div>
+{% endblock %}
+
+
+</body>
+{% block scripts %}
+  <script src="{% static 'js/cctv.js'%}"></script>
+{% endblock %}
+</html>

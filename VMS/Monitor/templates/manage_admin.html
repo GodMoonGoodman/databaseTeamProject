@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  {% block css%}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/manage_admin.css'%}">
+  {% endblock %}
+</head>
+<body>
+{% block AA%}
+	{% if user == False %}
+    <form class="form-inline my-2 my-lg-0" action="/login">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">로그인</button>
+    </form>
+	{% else %}
+    <form class="form-inline my-2 my-lg-0" action="/logout">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">{{user.name}}</button>
+    </form>
+	{% endif %}
+{% endblock %}
+
+
+
+
+{% block content %}
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/main">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">계정관리</li>
+    <li class="breadcrumb-item active" aria-current="page">일반관리자 관리</li>
+  </ol>
+</nav>
+<div class="table-responsive-vertical shadow-z-1" id="tableees">
+  <!-- Table starts here -->
+  <table id="table" class="table table-hover table-mc-light-blue">
+  <h4 class="my">일반 관리자</h4>
+      <thead class="my2">
+        <tr>
+          <th style="text-align: center;">이메일</th>
+          <th style="text-align: center;">이름</th>
+          <th style="text-align: center;">직책</th>
+          <th style="text-align: center;">휴대폰</th>
+          <th style="text-align: center;">CCTV</th>
+          <th style="text-align: center;">삭제</th>
+        </tr>
+        <tr>
+        <th style="text-align: center;">
+          <input style="text-align: center;" type="text" id="myInput0" onkeyup="myFunction0()" placeholder="이메일 검색">
+        </th>
+        <th style="text-align: center;">
+          <input style="text-align: center;" type="text" id="myInput1" onkeyup="myFunction1()" placeholder="이름 검색">
+        </th>
+        <th style="text-align: center;">
+          <input style="text-align: center;" type="text" id="myInput2" onkeyup="myFunction2()" placeholder="직책 검색">
+        </th>
+        <th style="text-align: center;">
+          <input style="text-align: center;" type="text" id="myInput3" onkeyup="myFunction3()" placeholder="휴대폰 검색">
+        </th>
+        <th style="text-align: center;"></th>
+        <th style="text-align: center;"></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for i in all_user %}
+        <tr>
+          <td style="text-align: center;" data-title="Email">{{i.email}}</td>
+          <td style="text-align: center;" data-title="Name">{{i.name}}</td>
+          <td style="text-align: center;" data-title="Position">{{i.position}}</td>
+          <td style="text-align: center;" data-title="Phone number">{{i.phone_number}}</td>
+          <td style="text-align: center;" data-title="cctv">
+            <a href="/manage_admin_cctv/{{i.id}}">관리중인cctv목록</a>
+          </td>
+          <td style="text-align: center;" data-title="delete">
+            <a href="/manage_admin_delete/{{i.id}}">삭제</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+<div id='admin_ad'>
+<h4 id='admin_ad_header'>새로운 관리자 추가</h4>
+<form method="post">
+    {% csrf_token %}
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="input1">이메일</label>
+      <input name="email" type="email" class="form-control" id="input1" placeholder="Email">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="input2">비밀번호</label>
+      <input name="pw" type="password" class="form-control" id="input2" placeholder="Password">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-4">
+      <label for="input3">이름</label>
+      <input name="name" type="text" class="form-control" id="input3" placeholder="Name">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="input4">휴대전화</label>
+      <input name="phone_number" type="text" class="form-control" id="input4" placeholder="Phone Number">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="input5">Position</label>
+      <select name="position" id="input5" class="form-control">
+        <option selected>Choose...</option>
+        <option>ADMIN</option>
+        <option>TEAM_LEADER</option>
+        <option>DEPART_LEADER</option>
+      </select>
+    </div>
+  </div>
+  <button style="width:100%;margin-top: 3%"  type="submit" class="btn btn-primary btn-lg">&nbsp;&nbsp;&nbsp;추가&nbsp;&nbsp;&nbsp;</button>
+</form>
+</div>
+  </div>
+{% endblock %}
+</body>
+{% block scripts %}
+  <script src="{% static 'js/cctv.js'%}"></script>
+{% endblock %}
+
+</html>

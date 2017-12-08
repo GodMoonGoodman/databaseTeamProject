@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>main</title>
+</head>
+<body>
+{% block AA%}
+	{% if user == False %}
+    <form class="form-inline my-2 my-lg-0" action="/login">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">로그인</button>
+    </form>
+	{% else %}
+    <form class="form-inline my-2 my-lg-0" action="/logout">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">{{user.name}}</button>
+    </form>
+	{% endif %}
+{% endblock %}
+
+
+
+{% block content %}
+
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/main">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">CCTV</li>
+    <li class="breadcrumb-item active" aria-current="page">추가/제거</li>
+  </ol>
+</nav>
+<div style="margin-top: 3%;" class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <h3 style="color:#007bff;" class="card-title">비디오, 메타 파일 업로드</h3>
+
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                비디오
+                <input name="video" type="file" class="form-control" id="input1">
+              </div>
+              <div class="form-group col-md-6">
+                메타
+                <input name="metacsv" type="file" class="form-control" id="input2">
+              </div>
+            </div>
+            <button style="margin-top:3%; width:100%" type="submit" class="btn btn-primary btn-lg">&nbsp;&nbsp;&nbsp;추가&nbsp;&nbsp;&nbsp;</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=_tYt07PPyPq1NBA7SH48&submodules=geocoder"></script>
+<script src="{% static 'js/cctv.js'%}"></script>
+{% endblock %}
+</body>
+</html>

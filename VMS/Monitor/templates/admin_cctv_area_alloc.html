@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>main</title>
+  {% block css%}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/manage_admin.css'%}">
+  {% endblock %}
+</head>
+<body>
+{% block AA%}
+	{% if user == False %}
+    <form class="form-inline my-2 my-lg-0" action="/login">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">로그인</button>
+    </form>
+	{% else %}
+    <form class="form-inline my-2 my-lg-0" action="/logout">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">{{user.name}}</button>
+    </form>
+	{% endif %}
+{% endblock %}
+
+
+
+
+{% block content %}
+<div class="table-responsive-vertical shadow-z-1" id="tableees">
+  <h4>{{cctv.model}}(설치일 : {{cctv.setup_date}})에 촬영공간 할당</h4>
+<iframe
+  width="100%"
+  height="450px"
+  frameborder="0" style="border:0"
+  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBlRhiZOEOyc91d9j7EevLbtqhKxfyh1Yk&q={{cctv.lat}},{{cctv.lon}}&zoom=17" allowfullscreen>
+  </iframe>
+
+  <!-- Table starts here -->
+  <table id="table" class="table table-hover table-mc-light-blue">
+      <thead class="my2">
+        <tr>
+          <th style="text-align: center;">이름</th>
+          <th style="text-align: center;">주소</th>
+          <th style="text-align: center;">위치</th>
+          <th style="text-align: center;">경도</th>
+          <th style="text-align: center;">위도</th>
+          <th style="text-align: center;">수정</th>
+          <th style="text-align: center;">촬영공간으로 할당</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for i in all_area %}
+        <tr>
+          <td style="text-align: center;" data-title="Name">{{i.name}}</td>
+          <td style="text-align: center;" data-title="Addr">{{i.address}}</td>
+          <td style="text-align: center;" data-title="Loc">{{i.loc1}} {{i.loc2}} {{i.loc3}}</td>
+          <td style="text-align: center;" data-title="lat">{{i.lat}}</td>
+          <td style="text-align: center;" data-title="lat">{{i.lon}}</td>
+          <td style="text-align: center;" data-title="maplink">
+            <a href="/manage_area_modify/{{cctv.id}}">수정</a>
+          </td>
+          <td style="text-align: center;" data-title="delete">
+            <a href="/admin_cctv_area_alloc_append/?cctvid={{cctv.id}}&areaid={{i.id}}">촬영공간으로 할당</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+</div>
+{% endblock %}
+</body>
+{% block scripts %}
+  <script src="{% static 'js/cctv.js'%}"></script>
+{% endblock %}
+
+</html>

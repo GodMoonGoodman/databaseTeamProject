@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  {% block css%}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/manage_admin.css'%}">
+  {% endblock %}
+</head>
+<body>
+{% block AA%}
+	{% if user == False %}
+    <form class="form-inline my-2 my-lg-0" action="/login">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">로그인</button>
+    </form>
+	{% else %}
+    <form class="form-inline my-2 my-lg-0" action="/logout">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">{{user.name}}</button>
+    </form>
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/main">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">CCTV</li>
+    <li class="breadcrumb-item active" aria-current="page">영상관리</li>
+  </ol>
+</nav>
+<div class="table-responsive-vertical shadow-z-1" id="tableees">
+  <!-- Table starts here -->
+  <table id="table" class=" table table-hover table-mc-light-blue">
+  <h4 class="my">영상관리 (order by start time)</h4>
+      <thead class="my2">
+        <tr>
+          <th style="text-align: center;">video id</th>
+          <th style="text-align: center;">촬영 시작</th>
+          <th style="text-align: center;">촬영 끝</th>
+          <th style="text-align: center;">촬영공간</th>
+          <th style="text-align: center;">CCTV model</th>
+          <th style="text-align: center;">CCTV 설치날짜</th>
+          <th style="text-align: center;">삭제</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for i in all_video %}
+        <tr>
+          <td style="text-align: center;">{{i.0}}</td>
+          <td style="text-align: center;">{{i.1|date:"y-m-d H:00"}}</td>
+          <td style="text-align: center;">{{i.2|date:"y-m-d H:00"}}</td>
+          <td style="text-align: center;">{{i.3}}</td>
+          <td style="text-align: center;">{{i.4}}</td>
+          <td style="text-align: center;">{{i.5}}</td>
+          <td style="text-align: center;"">
+            <a style="color:gray; font-weight: bold;" href="#" disabled>삭제</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+
+
+<div id='admin_ad'>
+  <h4 id='admin_ad_header' style="margin-bottom: 2%">시간대 일괄삭제</h4>
+  <form method="post">
+      {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="input1">시작시간</label>
+        <input name="start-time" type="text" class="form-control" id="input1">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="input2">끝시간</label>
+        <input name="end-time" type="text" class="form-control" id="input2">
+      </div>
+    </div>
+  <button style="width:100%; margin-top: 2%" type="submit" class="btn btn-danger btn-lg">&nbsp;&nbsp;&nbsp;일괄삭제&nbsp;&nbsp;&nbsp;</button>
+  </form>
+</div>
+
+
+
+
+
+
+{% endblock %}
+</body>
+
+{% block scripts %}
+  <script src="{% static 'js/cctv.js'%}"></script>
+{% endblock %}
+
+</html>

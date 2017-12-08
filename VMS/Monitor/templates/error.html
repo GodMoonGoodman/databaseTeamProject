@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>main</title>
+</head>
+{% block AA%}
+<body style="text-align: center;">
+	{% if user == False %}
+    <form class="form-inline my-2 my-lg-0" action="/login">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">로그인</button>
+    </form>
+	{% else %}
+    <form class="form-inline my-2 my-lg-0" action="/logout">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">{{user.name}}</button>
+    </form>
+	{% endif %}
+{% endblock %}
+
+
+
+{% block content %}
+<h1 style="margin-top: 10%;text-decoration-style: bold"> {{error_msg}} </h1>
+<a href="javascript:history.back()">뒤로가기</a>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=_tYt07PPyPq1NBA7SH48&submodules=geocoder"></script>
+
+{% endblock %}
+</body>
+</html>2

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>main</title>
+  {% block css%}
+<!--   <link rel="stylesheet" type="text/css" href="{% static 'css/manage_admin.css'%}">
+ -->  {% endblock %}
+</head>
+<body>
+{% block AA%}
+	{% if user == False %}
+    <form class="form-inline my-2 my-lg-0" action="/login">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">로그인</button>
+    </form>
+	{% else %}
+    <form class="form-inline my-2 my-lg-0" action="/logout">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">{{user.name}}</button>
+    </form>
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/main">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">계정관리</li>
+    <li class="breadcrumb-item active" aria-current="page">내정보 변경</li>
+  </ol>
+</nav>
+<div class="table-responsive-vertical shadow-z-1" id="tableees">
+  <!-- Table starts here -->
+	<div id='admin_ad'  style="padding: 30%;padding-top: 30px;">
+		<h4 style="margin-bottom: 4%" id='admin_ad_header'>개인정보 수정</h4>
+		<form method="post">
+		    {% csrf_token %}
+		  <div class="form-row">
+		    <div class="form-group col-md-12">
+		      <label for="input1">이메일</label>
+		      <input name="email" type="email" class="form-control" id="input1" value="{{user.email}}" disabled>
+		    </div>
+		    <div class="form-group col-md-12">
+		      <label for="input2">비밀번호</label>
+		      <input name="pw" type="password" class="form-control" id="input2" value="{{user.pw}}">
+		    </div>
+		  </div>
+		  <div class="form-row">
+		    <div class="form-group col-md-12">
+		      <label for="input3">이름</label>
+		      <input name="name" type="text" class="form-control" id="input3" value="{{user.name}}">
+		    </div>
+		    <div class="form-group col-md-12">
+		      <label for="input4">휴대전화</label>
+		      <input name="phone_number" type="text" class="form-control" id="input4" value="{{user.phone_number}}">
+		    </div>
+		    <div class="form-group col-md-12">
+		      <label for="input5">Position</label>
+		      <select name="position" id="input5" class="form-control">
+		      	{% for i in positions %}
+		      		{% if i == user.position %}
+		      		<option value="{{user.position}}" selected>{{user.position}}</option>
+		      		{% else %}
+		      		<option value="{{i}}">{{i}}</option>
+		      		<!-- {% endif %} -->
+		      	{% endfor %}
+		      </select>
+		    </div>
+		  </div >
+		  <button style="width: 100%; margin-top: 3%" type="submit" class="btn btn-primary btn-lg">&nbsp;&nbsp;&nbsp;변경&nbsp;&nbsp;&nbsp;</button>
+		</form>
+	</div>
+</div>
+{% endblock %}
+</body>
+</html>

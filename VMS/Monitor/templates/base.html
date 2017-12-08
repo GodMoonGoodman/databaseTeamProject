@@ -1,0 +1,122 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Y CCTV</title>
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css'%}">
+  {% block css%}
+  {% endblock %}
+</head>
+
+<body>
+
+<!-- Image and text -->
+<nav style="height: 70px" class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/main">
+    <img src="{% static 'img/camera-640.png'%}" width="30" height="30" class="d-inline-block align-top" alt="">
+    &nbsp;&nbsp;통합 CCTV 관리 시스템&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+<!--       <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li> -->
+<!--       <li class="nav-item">
+        <a class="nav-link" href="#">Link</a>
+      </li> -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          계정관리
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          {% if user.is_super == True %}
+          <a class="dropdown-item" href="/my">내 정보 변경</a>
+          <a class="dropdown-item" href="/manage_admin">일반 관리자 관리</a>
+          {% else %}
+            {% if user != False %}
+            <a class="dropdown-item" href="/my">내 정보 변경</a>
+            {% endif %}
+          {% endif %}
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          CCTV
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          {% if user.is_super == True %}
+          <a class="dropdown-item" href="/manage_cctv">현황/제거</a>
+          <a class="dropdown-item" href="/manage_cctv_add">추가</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/manage_videos">영상관리</a>
+          {% else %}
+            {% if user != False %}
+            <a class="dropdown-item" href="/admin_cctv">촬영공간 할당</a>
+            {% endif %}
+          {% endif %}
+
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          공간관계
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          {% if user.is_super == True %}
+          <a class="dropdown-item" href="/manage_area">촬영공간 관리</a>
+          <a class="dropdown-item" href="/manage_neighbor">이웃공간 관리</a>
+          <a class="dropdown-item" href="/manage_sequence">공간 시퀀스 관리</a>
+          {% else %}
+            {% if user != False %}
+            <a class="dropdown-item" href="/manage_area">촬영공간 관리</a>
+
+            {% endif %}
+          {% endif %}
+        </div>
+      </li>
+      <li class="nav-item">
+				<button style="background:none;color:gray;border:none;" type="button" class="btn btn-secondary" data-toggle="tooltip" data-html="true" title="<em>백주의 일종으로 수수(고량, 高粱) 단독 혹은 수수를 주원료로 다른 곡물이나 기타 원료를 사용하여 만든 중국의 증류주.</em>">
+				  연태고량주(烟壶高粱酒)?
+				</button>
+      </li>
+    </ul>
+{% block AA %}
+{% endblock %}
+  </div>
+
+</nav>
+
+
+{% block content %}
+
+{% endblock %}
+
+<footer style="margin-top: 10%;text-align: center;" class="footer">
+      <div class="container">
+        <span class="text-muted">연태고량주(烟壶高粱酒) - 데이터베이스 팀 프로젝트</span><br>
+        <span class="text-muted">2017-2 Yonsei Univ.</span>
+      </div>
+    </footer>
+</body>
+
+
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+<script src="{% static 'js/base.js'%}"></script>
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+{% block scripts %}
+
+{% endblock %}
+
+</html>

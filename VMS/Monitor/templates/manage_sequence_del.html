@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>main</title>
+  {% block css%}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/manage_admin.css'%}">
+  {% endblock %}
+</head>
+<body>
+{% block AA%}
+  {% if user == False %}
+    <form class="form-inline my-2 my-lg-0" action="/login">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">로그인</button>
+    </form>
+  {% else %}
+    <form class="form-inline my-2 my-lg-0" action="/logout">      
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">{{user.name}}</button>
+    </form>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/main">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">공간관계</li>
+    <li class="breadcrumb-item active"><a href="/manage_sequence">공간 시퀀스 관리</a></li>
+    <li class="breadcrumb-item active" aria-current="page">이웃공간 삭제</li>
+  </ol>
+</nav>
+<div style="margin-top: 3%;" class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <h3 style="color:#007bff;" class="card-title">공간 시퀀스 줄이기</h3>
+          <p class="card-text">이미 등록된 공간 시퀀스에서 이웃공간을 줄입니다.</p>
+          <p class="card-text">공간시퀀스의 연결 상태를 유지하는 삭제만 가능합니다.</p>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th style="text-align: center;" scope="col">#</th>
+                <th style="text-align: center;" scope="col">촬영 공간</th>
+                <th style="text-align: center;" scope="col">경 로</th>
+                <th style="text-align: center;" scope="col">촬영 공간</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in count %}
+              {% if i is 0 %}
+              <tr>
+                <th style="text-align: center;"  scope="row">{{i|add:"1"}}</th>
+                <td style="text-align: center;">{{targetSEQ.id_NEI1.id_AREA1.name}}</td>
+                <td style="text-align: center;">{{targetSEQ.id_NEI1.path}}</td>
+                <td style="text-align: center;">{{targetSEQ.id_NEI1.id_AREA2.name}}</td>
+              </tr>
+              {% elif i is 1 %}
+              <tr>
+                <th style="text-align: center;"  scope="row">{{i|add:"1"}}</th>
+                <td style="text-align: center;">{{targetSEQ.id_NEI2.id_AREA1.name}}</td>
+                <td style="text-align: center;">{{targetSEQ.id_NEI2.path}}</td>
+                <td style="text-align: center;">{{targetSEQ.id_NEI2.id_AREA2.name}}</td>
+              </tr>
+              {% elif i is 2 %}
+              <tr>
+                <th style="text-align: center;"  scope="row">{{i|add:"1"}}</th>
+                <td style="text-align: center;">{{targetSEQ.id_NEI3.id_AREA1.name}}</td>
+                <td style="text-align: center;">{{targetSEQ.id_NEI3.path}}</td>
+                <td style="text-align: center;">{{targetSEQ.id_NEI3.id_AREA2.name}}</td>
+              </tr>
+              {% elif i is 3 %}
+              <tr>
+                <th style="text-align: center;"  scope="row">{{i|add:"1"}}</th>
+                <td style="text-align: center;">{{targetSEQ.id_NEI4.id_AREA1.name}}</td>
+                <td style="text-align: center;">{{targetSEQ.id_NEI4.path}}</td>
+                <td style="text-align: center;">{{targetSEQ.id_NEI4.id_AREA2.name}}</td>
+              </tr>
+              {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+            <form method="POST">
+                {% csrf_token %}
+              <div class="form-row">
+                <label for="input1">삭제할 이웃 공간</label>
+                  {% if len == 2 %}
+                  <select name="nei" id="input1" class="form-control form-control-lg" disabled="">
+                  {% else%}
+                  <select name="nei" id="input1" class="form-control form-control-lg">
+                  {% endif %}
+                    <option selected>Choose...</option>
+                    {% for p, a in zipped %}
+                    {% if p is True %}
+                    <option value="{{a.id}}">[{{a.id_AREA1.name}}] - {{a.path}} - [{{a.id_AREA2.name}}]</option>
+                    {% else %}
+                    <option value="{{a.id}}" disabled>[{{a.id_AREA1.name}}] - {{a.path}} - [{{a.id_AREA2.name}}]</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+              </div>
+            {% if len == 2 %}
+              <button style="margin-top:3%; width:100%" class="btn btn-secondary btn-lg" disabled>&nbsp;&nbsp;&nbsp;삭제&nbsp;&nbsp;&nbsp;</button>
+            {% else%}
+              <button style="margin-top:3%; width:100%" type="submit" class="btn btn-danger btn-lg">&nbsp;&nbsp;&nbsp;삭제&nbsp;&nbsp;&nbsp;</button>
+            {% endif %}
+
+            </form>
+          <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+        </div>
+      </div>
+    </div>
+    
+</div> 
+{% endblock %}
+</body>
+{% block scripts %}
+  <script src="{% static 'js/cctv.js'%}"></script>
+{% endblock %}
+</html>

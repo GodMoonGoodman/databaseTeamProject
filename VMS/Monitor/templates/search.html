@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>main</title>
+  {% block css%}
+  <link rel="stylesheet" type="text/css" href="{%static 'css/main.css'%}">
+
+  {% endblock %}
+</head>
+<body>
+{% block AA%}
+	{% if user == False %}
+    <form class="form-inline my-2 my-lg-0" action="/login">
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">로그인</button>
+    </form>
+	{% else %}
+    <form class="form-inline my-2 my-lg-0" action="/logout">
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">{{user.name}}</button>
+    </form>
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+  <form action="/search" method="get">
+  <!-- {% csrf_token %} -->
+  <div class="container">
+    <h1 class="display-5">Search CCTVs what you want...</h1>
+    <div class="input-group row">
+      <input type="text" name="keyword" class="form-control form-control-lg" value="{{searchword}}" aria-label="Search for...">
+      <span class="input-group-btn">
+        <button class="btn btn-secondary" type="submit">Go!</button>
+      </span>
+    </div>
+  </div>
+  </form>
+</div>
+
+<div class="container">
+{% if date_search %}
+<h4>시간대 <bold>{{startdate}}</bold> ~ <bold>{{enddate}}</bold> 의 검색결과입니다.</h4>
+{% endif %}
+<!-- Example row of columns -->
+
+  <div class="answer-group">
+    <div class="row">
+      <div style="width:100%;margin-bottom:auto;" class="alert alert-warning" role="alert">
+        CCTV 모델명 에 "{{keyword}}"이 있는 CCTV영상
+      </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 3%;">
+      <div class="list-group" style="margin-bottom: 0%; width:100%">
+        {% for i in search_cctv %}
+        <a href="/video_view/{{i.0}}" class="list-group-item list-group-item-action flex-column align-items-start"><!-- active -->
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{i.3}}<small>&nbsp;&nbsp;&nbsp;[{{i.1|date:"y-m-d H:00"}} ~ {{i.2|date:"y-m-d H:00"}}]</small></h5>
+            <small>{{i.9}} <{{i.7}}></small>
+          </div>
+					<p class="mb-1"><small>주소 : {{i.8}}</small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small>촬영장소 : {{i.4}} {{i.5}} {{i.6}}</small></p>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+	<div class="answer-group">
+    <div class="row">
+      <div style="width:100%;margin-bottom:auto;" class="alert alert-warning" role="alert">
+        CCTV 모델명 에 "{{keyword}}"이 있는 CCTV영상
+      </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 3%;">
+      <div class="list-group" style="margin-bottom: 0%; width:100%">
+        {% for i in search_videos %}
+        <a href="/video_view/{{i.0}}" class="list-group-item list-group-item-action flex-column align-items-start"><!-- active -->
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{i.3}}<small>&nbsp;&nbsp;&nbsp;[{{i.1|date:"y-m-d H:00"}} ~ {{i.2|date:"y-m-d H:00"}}]</small></h5>
+            <small>{{i.9}} <{{i.7}}></small>
+          </div>
+					<p class="mb-1"><small>주소 : {{i.8}}</small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small>촬영장소 : {{i.4}} {{i.5}} {{i.6}}</small></p>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="answer-group">
+    <div class="row">
+      <div style="width:100%;margin-bottom:auto;" class="alert alert-info" role="alert">
+        공간 시퀀스 "{{keyword}}" 검색 결과..
+      </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 3%;">
+      <div class="list-group" style="margin-bottom: 0%; width:100%">
+        {% for seqId, videos in zipped_search_video %}
+              <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active"><!-- active -->
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1">{{seqId}}</h6>
+                </div>
+              </a>
+          {% for video in videos %}
+            {% for i in video%}
+						<a href="/video_view/{{i.0}}" class="list-group-item list-group-item-action flex-column align-items-start"><!-- active -->
+		          <div class="d-flex w-100 justify-content-between">
+		            <h5 class="mb-1">{{i.3}}<small>&nbsp;&nbsp;&nbsp;[{{i.1|date:"y-m-d H:00"}} ~ {{i.2|date:"y-m-d H:00"}}]</small></h5>
+		            <small>{{i.9}} <{{i.7}}></small>
+		          </div>
+							<p class="mb-1"><small>주소 : {{i.8}}</small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small>촬영장소 : {{i.4}} {{i.5}} {{i.6}}</small></p>
+		        </a>
+            {% endfor %}
+          {% endfor %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+
+
+{% endblock %}
+
+</body>
+</html>

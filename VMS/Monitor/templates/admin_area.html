@@ -1,0 +1,235 @@
+from django.shortcuts import render,redirect, render_to_response
+from Monitor.models import *
+from django.db import connection,transaction
+import random, string
+import csv
+
+
+positions=['ADMIN', 'TEAM_LEADER', 'DEPART_LEADER', 'EMPLOYEE']
+
+def randomword(length):
+   letters = string.ascii_lowercase
+   return ''.join(random.choice(letters) for i in range(length))
+# Create your views here.
+
+def current_user(request):
+	try:
+		sess_id = request.COOKIES['sess_id']
+
+		# user_instance = SESSION.objects.filter(sess=sess_id)
+		SQL = 'SELECT "Monitor_session"."id", "Monitor_session"."id_USER_id", "Monitor_session"."sess" FROM "Monitor_session" WHERE "sess" = "%s"'%sess_id
+		# print(user_instance.query)
+		user_instance = SESSION.objects.raw(SQL)
+
+
+		# user = USER.objects.get(id=user_id)
+		return user_instance[0].id_USER
+	except:
+		return False
+
+def find_user(email,pw):
+	try:
+		# user = USER.objects.filter(email=email, pw=pw)
+		SQL = 'SELECT * FROM "Monitor_user" WHERE ("Monitor_user"."pw" = "%s" AND "Monitor_user"."email" = "%s")'%(pw,email)
+		user = USER.objects.raw(SQL)
+		# print(user.query)
+		return user[0]
+
+	except:
+		return False
+
+
+def Main(request):
+	user = current_user(request)
+	if user:
+		print(user,user.name)
+	else:
+		print("not logined")
+
+	# is_super = user.is_super
+	return render(request,'main.html',{'user':user})
+
+def LogIn(request):
+	if request.method == "POST":
+		print(request.POST)
+
+		PostEmail = request.POST.getlist('email')[0]
+		PostPw = request.POST.getlist('pw')[0]
+
+		user = find_user(PostEmail, PostPw)
+
+		if user:
+			user.is_on = True
+			user.save()
+			response = redirect('/main')
+			
+			randword = randomword(30)
+			response.set_cookie('sess_id', randword, max_age=None)
+
+			newSess = SESSION.objects.create(id_USER=user, sess=randword)
+			# print(newSess.query)
+			newSess.save()
+
+			return response
+		else:
+			print("login fail")
+
+
+	return render(request, 'login.html')
+
+
+def Logout(request):
+	user = current_user(request)
+	user.is_on = False
+	user.save()
+
+	sess = SESSION.objects.filter(id_USER=user)
+	sess.delete()
+	response = redirect('/main',{'user':False})
+	# response.set_cookie('sess_id', '', max_age=None)
+	return response
+
+def Manage_admin(request):
+	user = current_user(request)
+	if request.method == "POST":
+		print(request.POST)
+		email = request.POST.getlist('email')[0]
+		pw = request.POST.getlist('pw')[0]
+		name = request.POST.getlist('name')[0]
+		position = request.POST.getlist('position')[0]
+		phone_number = request.POST.getlist('phone_number')[0]
+		is_super = False
+		is_on = False
+
+		new_user = USER.objects.create(email=email, pw=pw, name=name,position=position,phone_number=phone_number,is_super=is_super,is_on=is_on)
+		new_user.save()
+
+
+	all_user = USER.objects.all()
+	return render(request,'manage_admin.html',{'user':user,'all_user':all_user, 'positions':positions})
+
+
+def Manage_admin_delete(request, pk):
+	user = current_user(request)
+	all_user = USER.objects.all()
+	sess = USER.objects.filter(id=pk)
+	sess.delete()
+
+	return render(request,'manage_admin.html',{'user':user,'all_user':all_user, 'positions':positions})
+
+def Manage_admin_cctv(request, pk):
+	user = current_user(request)
+
+	targetUser = USER.objects.get(id=pk)
+	cctvs = CCTV.objects.filter(id_USER=targetUser)
+	
+	return render(request, 'manage_admin_cctv.html', {'user':user, 'cctvs':cctvs})
+
+def Manage_cctv(request):
+	user = current_user(request)
+	cctvs = CCTV.objects.raw('select * from Monitor_cctv as A,Monitor_user as B where A.id_USER_id=B.id')
+	# cctvOwner = 
+	return render(request, 'manage_cctv.html', {'user':user, 'cctvs':cctvs})
+
+def Manage_cctv_alloc(request,pk):
+	user = current_user(request)
+	if request.method == "POST":
+		print(request.POST)
+		selected_cctvid = request.POST.getlist('cctv')[0]
+		selected_userid = request.POST.getlist('user')[0]
+
+		SQL = 'SELECT * FROM "Monitor_user" WHERE "Monitor_user"."id" = "%s"'%selected_userid
+		selected_user_ins = USER.objects.raw(SQL)[0]
+
+		# selected_user_ins = USER.objects.get(id=selected_userid)
+
+		SQL = 'SELECT * FROM "Monitor_cctv" WHERE "Monitor_cctv"."id" = "%s"'%selected_cctvid
+		selected_cctv_ins = CCTV.objects.raw(SQL)[0]
+
+		# selected_cctv_ins = CCTV.objects.get(id=selected_cctvid)
+
+		SQL = 'UPDATE "Monitor_cctv" SET "id_USER_id" = "%s" WHERE "Monitor_cctv"."id" = "%s"'%(selected_user_ins.id,selected_cctv_ins.id)
+		# selected_cctv_ins.id_USER=selected_user_ins
+		# selected_cctv_ins.save()
+		# selected_cctv_ins = CCTV.objects.raw(SQL)
+		# CCTV.save_base(CCTV, raw=SQL)
+		# CCTV.save()
+		with connection.cursor() as cursor:
+			cursor.execute(SQL)
+		connection.commit()
+
+		cctvs = CCTV.objects.raw('select * from Monitor_cctv as A,Monitor_user as B where A.id_USER_id=B.id')
+
+		return render(request, 'manage_cctv.html', {'user':user, 'cctvs':cctvs})
+		
+	cctv = CCTV.objects.get(id=pk)
+	all_user = USER.objects.all()
+	return render(request, 'Manage_cctv_alloc.html',{'thiscctv':cctv, 'all_user':all_user})
+
+
+
+def Manage_cctv_add(request):
+	
+	user = current_user(request)
+
+	UPLOAD_DIR = '/Users/ysm/Desktop/DB_TeamProject/VMS/Monitor/csv'
+	if request.method == "POST":
+		if 'csv' in request.FILES:
+			file = request.FILES['csv']
+			filename = file._name
+			fp = open('%s/%s' % (UPLOAD_DIR, filename) , 'wb')
+			for chunk in file.chunks():
+				fp.write(chunk)
+			fp.close()
+			
+			with open('%s/%s' % (UPLOAD_DIR, filename), newline='') as csvfile:
+				spamreader = csv.reader(csvfile, delimiter=',')
+				for row in spamreader:
+					print(row)
+					newCCTV = CCTV.objects.create(model=row[0],setup_date=row[1],lat=row[2],lon=row[3],id_USER=user)
+					newCCTV.save()
+		else:
+			print(request.POST)
+			model = request.POST.getlist('model')[0]
+			setup_date = request.POST.getlist('setup_date')[0]
+			new_cctv = CCTV.objects.create(model=model,setup_date=setup_date,id_USER=user)
+			new_cctv.save()
+
+		cctvs = CCTV.objects.raw('select * from Monitor_cctv as A,Monitor_user as B where A.id_USER_id=B.id')
+		return render(request, 'manage_cctv.html', {'user':user, 'cctvs':cctvs})
+	return render(request, 'manage_cctv_add.html', {'user':user})
+
+	# return render(request, 'manage_cctv_add.html', {'user':user})
+
+def Admin_cctv(request):
+	user = current_user(request)
+	myCctvs = CCTV.objects.filter(id_USER=user)
+	return render(request, 'Admin_cctv.html',{'user':user,'cctvs':myCctvs})
+
+def Manage_area(request):
+	user = current_user(request)
+	all_area = AREA.objects.all()
+	return render(request, 'manage_area.html',{'user':user,'all_area':all_area})
+
+
+def Map(request):
+	return render(request,'map.html')
+
+
+def My(request):
+	user = current_user(request)
+
+	if request.method == "POST":
+		print(request.POST)
+		user.email = request.POST.getlist('email')[0]
+		user.pw = request.POST.getlist('pw')[0]
+		user.name = request.POST.getlist('name')[0]
+		user.position = request.POST.getlist('position')[0]
+		user.phone_number = request.POST.getlist('phone_number')[0]
+		user.is_super = False
+		user.is_on = True
+
+		# new_user = user.objects.update(email=email, pw=pw, name=name,position=position,phone_number=phone_number,is_super=is_super,is_on=is_on)
+		user.save()
+
+	return render(request,'my.html',{'user':user, 'positions':positions})

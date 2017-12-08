@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>main</title>
+  {% block css%}
+  <link rel="stylesheet" type="text/css" href="{%static 'css/main.css'%}">
+
+  {% endblock %}
+</head>
+<body>
+{% block AA%}
+	{% if user == False %}
+    <form class="form-inline my-2 my-lg-0" action="/login">
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">로그인</button>
+    </form>
+	{% else %}
+    <form class="form-inline my-2 my-lg-0" action="/logout">
+      <button class="btn btn-outline-success my-2 my-sm-0" id="login-btn" type="submit">{{user.name}}</button>
+    </form>
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron" style="height: 500px;background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://www.oracle.com/us/cw22-bg-vol-na-world-maker-faire-3559482.jpg');background-size:cover;background-position-y:center;">
+  <form action="/search" method="get">
+  <!-- {% csrf_token %} -->
+  <div class="container">
+    <h1 class="display-8" style="margin-top:120px;color:white;font-variant:small-caps;font-weight300;letter-spacing:3px;text-align:left;">Search CCTVs what you want...</h1>
+    <div class="input-group row">
+      <input type="text" name="keyword" class="form-control form-control-lg" placeholder="검색어,시작시간,끝시간" aria-label="Search for...">
+      <span class="input-group-btn">
+        <button class="btn btn-secondary" type="submit">Go!</button>
+      </span>
+    </div>
+  </div>
+  </form>
+</div>
+
+<div class="container">
+<!-- Example row of columns -->
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card border-secondary mb-3" style="max-width: 22rem;">
+        <div class="card-header" style="height:70px;padding-top:1%;"><h4><a target="_blank" class="btn btn-Success" href="https://github.com/GodMoonGoodman" role="button"><img src="https://png.icons8.com/?id=12598&size=1x"></a>SungMoon, Yoon</h4>
+</div>
+        <div class="card-body">
+          <img src="{%static 'img/sm.png'%}" width="100%" height="300px">
+					<h4 style="margin-top:8%;font-variant:small-caps;font-weight300;letter-spacing:11px;text-align:center;" class="card-title">Distribution</h4>
+					<a style="text-align:center" class="list-group-item list-group-item-action list-group-item-primary">Backend development</a>
+					<a style="text-align:center" class="list-group-item list-group-item-action list-group-item-success">DB Design</a>
+					<a style="text-align:center" class="list-group-item list-group-item-action list-group-item-warning">Bootstrap</a>
+					<a style="text-align:center" class="list-group-item list-group-item-action list-group-item-info">Fanal report</a>
+					<a style="text-align:center" class="list-group-item list-group-item-action list-group-item-danger">Aditional spec : GoogleMap API</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-secondary mb-3" style="max-width: 22rem;">
+        <div class="card-header" style="height:70px;padding-top:1%;"><h4><a target="_blank" class="btn btn-Success" href="https://github.com/GodMoonGoodman" role="button"><img src="https://png.icons8.com/?id=12598&size=1x"></a>SeungHo, Lee</h4>
+</div>
+        <div class="card-body">
+          <img src="{%static 'img/lsh.jpg'%}" width="100%" height="300px">
+					<h4 style="margin-top:8%;font-variant:small-caps;font-weight300;letter-spacing:11px;text-align:center;" class="card-title">Distribution</h4>
+					<a style="text-align:center" class="list-group-item list-group-item-action list-group-item-primary">Backend development</a>
+					<a style="text-align:center" class="list-group-item list-group-item-action list-group-item-success">DB Design</a>
+					<a style="text-align:center" class="list-group-item list-group-item-action list-group-item-warning">Search Algorithm</a>
+					<a style="text-align:center" class="list-group-item list-group-item-action list-group-item-info">First, Second report</a>
+					<a style="text-align:center" class="list-group-item list-group-item-action list-group-item-danger">Aditional spec : Statistic Graph</a>
+				 </div>
+      </div>
+    </div>
+        <div class="col-md-4">
+      <div class="card border-secondary mb-3" style="max-width: 22rem;">
+        <div class="card-header" style="height:70px;padding-top:1%;"><h4><a target="_blank" class="btn btn-Success" href="https://github.com/REyoungjun" role="button"><img src="https://png.icons8.com/?id=12598&size=1x"></a>YoungJoon, Kim
+</h4>
+</div>
+        <div class="card-body">
+          <img src="{%static 'img/kyj.png'%}" width="100%" height="300px">
+					<h4 style="margin-top:8%;font-variant:small-caps;font-weight300;letter-spacing:11px;text-align:center;" class="card-title">Distribution</h4>
+					<a style="text-align:center" class="list-group-item list-group-item-action list-group-item-primary">Backend development</a>
+					<a style="text-align:center" class="list-group-item list-group-item-action list-group-item-success">DB Design</a>
+					<a style="text-align:center" class="list-group-item list-group-item-action list-group-item-warning">Sequence Algorithm</a>
+					<a style="text-align:center" class="list-group-item list-group-item-action list-group-item-info">All report</a>
+					<a style="text-align:center" class="list-group-item list-group-item-action list-group-item-danger">System Test, Data generation</a>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+
+
+{% endblock %}
+
+</body>
+</html>
